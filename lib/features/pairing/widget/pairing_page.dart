@@ -121,10 +121,6 @@ class _PairingPageState extends State<PairingPage> {
       await _storage.write(key: 'ios8vpn.device.server', value: _serverUrl);
       await _storage.write(key: 'ios8vpn.device.id', value: deviceId);
       await _storage.write(key: 'ios8vpn.device.platform', value: platform);
-      final credential = await _storage.read(key: 'ios8vpn.pending_pairing.credential');
-      if (credential == null || credential.isEmpty) {
-        throw const FormatException('本机待完成配对凭据不存在');
-      }
       await _storage.write(key: 'ios8vpn.device.credential', value: credential);
       await _storage.delete(key: 'ios8vpn.pending_pairing.token');
       await _storage.delete(key: 'ios8vpn.pending_pairing.credential');
