@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,21 @@ class _PairingPageState extends State<PairingPage> {
     return '设备配对失败，请稍后重试。';
   }
 
+  Future<String> _loadOrCreatePendingCredential() async {
+    final pendingToken = await _storage.read(key: 'ios8vpn.pending_pairing.token');
+    final pendingCredential = await _storage.read(key: 'ios8vpn.pending_pairing.credential');
+    if (pendingToken == widget.token && pendingCredential != null && pendingCredential.length >= 32) {
+      return pendingCredential;
+    }
+
+    final random = Random.secure();
+    final bytes = List<int>.generate(48, (_) => random.nextInt(256));
+    final credential = base64Url.encode(bytes).replaceAll('=', '');
+    await _storage.write(key: 'ios8vpn.pending_pairing.token', value: widget.token);
+    await _storage.write(key: 'ios8vpn.pending_pairing.credential', value: credential);
+    return credential;
+  }
+
   Future<void> _redeem() async {
     final platform = _platform;
     if (!_hasToken || platform == null || _isPairing || _paired) return;
@@ -76,11 +93,16 @@ class _PairingPageState extends State<PairingPage> {
 
     String? redeemedDeviceId;
     try {
+      // Generate and persist the credential before the network request. If the
+      // response is lost, retrying this same one-time token reuses the same
+      // credential and the server safely returns the original device record.
+      final credential = await _loadOrCreatePendingCredential();
       final response = await dio.post<Map<String, dynamic>>(
         '/api/pairing-tokens/redeem',
         data: {
           'token': widget.token,
           'platform': platform,
+          'device_credential': credential,
         },
       );
       final data = response.data;
@@ -88,10 +110,9 @@ class _PairingPageState extends State<PairingPage> {
         throw const FormatException('服务器返回了空的配对结果');
       }
 
-      final credential = data['deviceCredential'];
       final deviceId = data['deviceId'];
-      if (credential is! String || credential.isEmpty || deviceId is! String || deviceId.isEmpty) {
-        throw const FormatException('服务器返回的设备凭据不完整');
+      if (deviceId is! String || deviceId.isEmpty) {
+        throw const FormatException('服务器返回的设备编号不完整');
       }
       redeemedDeviceId = deviceId;
 
@@ -100,7 +121,13 @@ class _PairingPageState extends State<PairingPage> {
       await _storage.write(key: 'ios8vpn.device.server', value: _serverUrl);
       await _storage.write(key: 'ios8vpn.device.id', value: deviceId);
       await _storage.write(key: 'ios8vpn.device.platform', value: platform);
+      final credential = await _storage.read(key: 'ios8vpn.pending_pairing.credential');
+      if (credential == null || credential.isEmpty) {
+        throw const FormatException('本机待完成配对凭据不存在');
+      }
       await _storage.write(key: 'ios8vpn.device.credential', value: credential);
+      await _storage.delete(key: 'ios8vpn.pending_pairing.token');
+      await _storage.delete(key: 'ios8vpn.pending_pairing.credential');
 
       String? statusWarning;
       try {
@@ -123,10 +150,14 @@ class _PairingPageState extends State<PairingPage> {
         _statusWarning = statusWarning;
       });
     } catch (error) {
+      if (error is DioException && error.response?.statusCode == 400) {
+        await _storage.delete(key: 'ios8vpn.pending_pairing.token');
+        await _storage.delete(key: 'ios8vpn.pending_pairing.credential');
+      }
       if (!mounted) return;
       final message = redeemedDeviceId == null
           ? _errorMessage(error)
-          : '服务器已登记设备，但本机安全保存凭据失败。请在管理后台撤销设备，再生成新的配对码。';
+          : '服务器已登记设备。待完成配对凭据已保存在本机；请重试完成保存，不要重新生成配对码。';
       setState(() => _error = message);
     } finally {
       dio.close();
