@@ -6,7 +6,7 @@ msix_version: 5.5.6.0
 logo_path: windows\runner\resources\app_icon.ico
 capabilities: internetClient, internetClientServer, privateNetworkClientServer
 languages: ar, en-us, es-es, fa-ir, fr-fr, id-id, pt-br, ru-ru, tr-tr, zh-cn, zh-tw
-protocol_activation: hiddify, v2ray, v2rayn, v2rayng, clash, clashmeta, sing-box
+protocol_activation: ios8vpn, hiddify, v2ray, v2rayn, v2rayng, clash, clashmeta, sing-box
 execution_alias: hiddify
 # identity_name and publisher must equal Partner Center > Product identity. CI keeps
 # both as they are and signs the MSIX with a certificate whose Subject equals
