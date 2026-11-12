@@ -12,6 +12,13 @@ on:
       - "windows/CMakeLists.txt"
       - "windows/runner/main.cpp"
       - "windows/runner/Runner.rc"
+      - "android/app/src/main/AndroidManifest.xml"
+      - "android/app/src/main/res/drawable/ios8vpn_launcher.xml"
+      - "windows/packaging/exe/make_config.yaml"
+      - "lib/utils/link_parsers.dart"
+      - "lib/core/router/go_router/routing_config_notifier.dart"
+      - "lib/features/pairing/widget/pairing_page.dart"
+      - "test/utils/link_parsers_test.dart"
       - "Makefile"
       - ".github/workflows/ios8-source-validation.yml"
   pull_request:
@@ -49,6 +56,10 @@ jobs:
           assert info["CFBundleDisplayName"] == "IOS8 VPN"
           schemes = [scheme for item in info.get("CFBundleURLTypes", []) for scheme in item.get("CFBundleURLSchemes", [])]
           assert "ios8vpn" in schemes
+          manifest = (root / "android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+          assert 'android:label="IOS8 VPN"' in manifest
+          assert 'android:scheme="ios8vpn"' in manifest
+          ET.parse(root / "android/app/src/main/res/drawable/ios8vpn_launcher.xml")
 
           for svg_path in [
               root / "assets/images/logo.svg",
@@ -67,6 +78,12 @@ jobs:
           assert 'VALUE "ProductName", "IOS8 VPN"' in win_rc
           assert 'VALUE "OriginalFilename", "IOS8VPN.exe"' in win_rc
 
+          installer = (root / "windows/packaging/exe/make_config.yaml").read_text(encoding="utf-8")
+          assert "display_name: IOS8 VPN" in installer
+          assert "publisher_name: IOS8" in installer
+          parser = (root / "lib/utils/link_parsers.dart").read_text(encoding="utf-8")
+          assert "pairingToken" in parser
+          assert "ios8vpn" in parser
           makefile = (root / "Makefile").read_text(encoding="utf-8")
           assert "mkdir -p IOS8VPN;" in makefile
           assert "Compress-Archive -Path IOS8VPN" in makefile
