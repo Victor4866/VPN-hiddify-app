@@ -1,6 +1,6 @@
 {
   "common": {
-    "appTitle": "Hiddify",
+    "appTitle": "IOS8 VPN",
     "start": "开始",
     "version": "版本",
     "ok": "确定",
@@ -96,9 +96,9 @@
     }
   },
   "intro": {
-    "banner": "畅享无限制网络的所需一切",
+    "banner": "连接你自己的网络，掌控每一条线路",
     "termsAndPolicyCaution(rich)": "继续即表示您同意 ${tap(@:pages.about.termsAndConditions)}",
-    "info(rich)": "由 Hiddify 用 ❤️ 制作。${tap_source(开源)} 和 ${tap_license(许可证)}"
+    "info(rich)": "基于 Hiddify 开源项目与 sing-box 核心构建。${tap_source(开源)} 和 ${tap_license(许可证)}"
   },
   "pages": {
     "home": {
@@ -201,7 +201,7 @@
         "share": "分享",
         "edit": "编辑",
         "shareTitle": "分享代理",
-        "configHint": "仅包含这个代理，以及它所经过的代理。Hiddify 会像导入其他配置一样导入它。",
+        "configHint": "仅包含这个代理，以及它所经过的代理。IOS8 VPN 会像导入其他配置一样导入它。",
         "editTitle": "作为新配置文件编辑",
         "editMsg": "“${name}”会被复制到一个可编辑的新配置文件。原件保持不变，因为订阅每次更新都会替换其中的代理。",
         "editConfirm": "复制并编辑",
@@ -221,7 +221,7 @@
         "received": "收到来自手机的内容",
         "from": "来自 $address",
         "page": {
-          "title": "发送到电视上的 Hiddify",
+          "title": "发送到电视上的 IOS8 VPN",
           "intro": "只需四步即可把订阅添加到电视，无需用遥控器输入。",
           "steps": {
             "network": {
@@ -260,7 +260,7 @@
       "updateSubscriptions": "更新订阅",
       "share": {
         "title": "分享配置文件",
-        "scanHint": "在另一台设备上用 Hiddify 扫描，即可添加此配置文件",
+        "scanHint": "在另一台设备上用 IOS8 VPN 扫描，即可添加此配置文件",
         "link": "订阅链接",
         "config": "配置",
         "configHint": "此配置文件运行时使用的完整 JSON，包含您的设置",
@@ -271,9 +271,9 @@
         "tooLargeToCopy": "内容过大，无法放入剪贴板：请以文件形式分享或保存",
         "toTv": {
           "button": "发送到电视",
-          "scanHint": "在电视上打开 Hiddify，点按 + 添加配置文件，然后扫描它显示的二维码。两台设备必须连接到同一个 Wi-Fi。",
+          "scanHint": "在电视上打开 IOS8 VPN，点按 + 添加配置文件，然后扫描它显示的二维码。两台设备必须连接到同一个 Wi-Fi。",
           "sent": "已发送。请在电视上按“导入”来添加。",
-          "notTvCode": "这不是 Hiddify 电视的二维码。请在电视上点按 + 添加配置文件，以显示二维码。",
+          "notTvCode": "这不是 IOS8 VPN 电视端的二维码。请在电视上点按 + 添加配置文件，以显示二维码。",
           "expired": "电视已不再接收此二维码的链接。请在电视上重新打开添加配置文件界面，并扫描新的二维码。",
           "busy": "电视上等待处理的链接太多。请先在电视上导入或放弃它们，然后重试。",
           "unreachable": "无法连接到电视。请确认手机和电视在同一个 Wi-Fi 网络中。"
@@ -930,7 +930,7 @@
       "updateNow": "立即更新",
       "downloading": "正在下载…",
       "installing": "正在启动安装程序…",
-      "allowInstall": "请在打开的设置中允许 Hiddify 安装应用,然后重试。",
+      "allowInstall": "请在打开的设置中允许 IOS8 VPN 安装应用，然后重试。",
       "failed": "无法安装更新。",
       "openPage": "打开发布页面",
       "tryAgain": "重试"
@@ -977,7 +977,7 @@
         "someApps": "浏览器和大多数应用",
         "switched": "已切换到系统代理模式。您可以在设置中更改。",
         "waitingTitle": "正在等待管理员权限",
-        "waitingMsg": "Hiddify 正在等待你允许 VPN 模式。",
+        "waitingMsg": "IOS8 VPN 正在等待你允许 VPN 模式。",
         "waitingWhere": "在打开的窗口中：",
         "waitingWindows": "点击“是”。",
         "waitingMac": "输入您的 Mac 密码并确认。",
@@ -994,7 +994,7 @@
         "helpProsTitle": "优点",
         "helpConsTitle": "注意事项",
         "helpVpn": {
-          "what": "Hiddify 会在您的电脑上添加一个虚拟网络，所有应用的网络流量都会自动经过它：浏览器、Telegram、游戏、更新程序等。无需在每个应用中单独设置。",
+          "what": "IOS8 VPN 会在您的电脑上建立虚拟网络，所有应用的网络流量都会按当前路由模式处理：浏览器、即时通信、游戏和更新程序等。无需在每个应用中单独设置。",
           "pros": [
             "所有应用都经过 Hiddify，无需在每个应用中设置。",
             "忽略代理设置的应用，如 Telegram 和游戏，也能正常使用。",
@@ -1006,7 +1006,7 @@
           ]
         },
         "helpSystemProxy": {
-          "what": "Hiddify 会更改电脑的代理设置。遵循该设置的应用，如网页浏览器，会通过 Hiddify 发送流量；其余应用则直接连接，就像 Hiddify 没有开启一样。",
+          "what": "系统代理模式会更改电脑的代理设置。遵循该设置的应用（如网页浏览器）会通过 IOS8 VPN 发送流量；其余应用则按当前系统路由直接连接。",
           "pros": [
             "无需管理员权限。",
             "开启和关闭都很快，断开连接时 Hiddify 会还原该设置。",
@@ -1101,7 +1101,7 @@
       "notFound": "此图片中未找到二维码"
     },
     "crashReport": {
-      "title": "Hiddify 上次崩溃了",
+      "title": "IOS8 VPN 上次异常退出",
       "msg": "要把报告发送给开发者以便修复吗？报告包含崩溃详情、日志，以及已移除服务器、密钥和密码的配置，打包为一个 zip 文件，发送前您可以先查看。",
       "send": "发送报告"
     },
@@ -1184,16 +1184,16 @@
     },
     "dbNewerThanApp": {
       "title": "已保存的数据来自更新的版本",
-      "msg": "您的配置文件和设置是由更新版本的 Hiddify 保存的，此旧版本无法读取。请安装最新版本以保留它们，或删除它们以使用此版本。",
+      "msg": "您的配置文件和设置由更新版本的 IOS8 VPN 保存，此版本无法读取。请安装兼容的新版本，或删除这些数据后继续。",
       "deleteData": "清除数据",
       "deleteConfirm": "已保存的数据将被清除。您的订阅和本地配置文件会尽可能重新添加；更新版本保存的其他内容将会丢失。",
       "downloadLatest": "下载最新版本"
     },
     "dbBroken": {
       "title": "无法打开已保存的数据",
-      "msg": "Hiddify 无法打开已保存的配置文件。请清除已保存的数据后重新开始：您的订阅和本地配置文件会尽可能重新添加，设置会保留。",
+      "msg": "IOS8 VPN 无法打开已保存的配置文件。请清除已保存的数据后重新开始：可读取的订阅和本地配置文件会尽可能重新添加，其他设置会保留。",
       "wipeData": "清除数据",
-      "wipeConfirm": "已保存的数据将被清除，Hiddify 会重新开始。仍可读取的配置文件会重新添加；其余的无法恢复。",
+      "wipeConfirm": "已保存的数据将被清除，IOS8 VPN 会重新开始。仍可读取的配置文件会重新添加；其余的无法恢复。",
       "copyError": "复制错误"
     }
   },
