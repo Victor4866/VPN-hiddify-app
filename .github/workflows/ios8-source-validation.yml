@@ -102,9 +102,10 @@ jobs:
           cache: true
       - name: Get Dart packages
         run: flutter pub get
+      - name: Generate models and providers before analysis
+        run: make gen translate
       - name: Test IOS8 VPN deep-link parsing
         run: flutter test test/utils/link_parsers_test.dart
 
       - name: Analyze IOS8 VPN pairing route
         run: flutter analyze lib/utils/link_parsers.dart lib/features/pairing lib/features/connection/notifier/connection_notifier.dart
-
