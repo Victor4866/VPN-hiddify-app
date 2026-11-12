@@ -57,17 +57,28 @@ class _PairingPageState extends State<PairingPage> {
   }
 
   Future<String> _loadOrCreatePendingCredential() async {
-    final pendingToken = await _storage.read(key: 'ios8vpn.pending_pairing.token');
-    final pendingCredential = await _storage.read(key: 'ios8vpn.pending_pairing.credential');
-    if (pendingToken == widget.token && pendingCredential != null && pendingCredential.length >= 32) {
-      return pendingCredential;
+    final pendingJson = await _storage.read(key: 'ios8vpn.pending_pairing');
+    if (pendingJson != null) {
+      try {
+        final pending = jsonDecode(pendingJson);
+        if (pending is Map &&
+            pending['token'] == widget.token &&
+            pending['credential'] is String &&
+            (pending['credential'] as String).length >= 32) {
+          return pending['credential'] as String;
+        }
+      } on FormatException {
+        // Replace malformed pending state with a fresh credential below.
+      }
     }
 
     final random = Random.secure();
     final bytes = List<int>.generate(48, (_) => random.nextInt(256));
     final credential = base64Url.encode(bytes).replaceAll('=', '');
-    await _storage.write(key: 'ios8vpn.pending_pairing.token', value: widget.token);
-    await _storage.write(key: 'ios8vpn.pending_pairing.credential', value: credential);
+    await _storage.write(
+      key: 'ios8vpn.pending_pairing',
+      value: jsonEncode({'token': widget.token, 'credential': credential}),
+    );
     return credential;
   }
 
@@ -122,8 +133,7 @@ class _PairingPageState extends State<PairingPage> {
       await _storage.write(key: 'ios8vpn.device.id', value: deviceId);
       await _storage.write(key: 'ios8vpn.device.platform', value: platform);
       await _storage.write(key: 'ios8vpn.device.credential', value: credential);
-      await _storage.delete(key: 'ios8vpn.pending_pairing.token');
-      await _storage.delete(key: 'ios8vpn.pending_pairing.credential');
+      await _storage.delete(key: 'ios8vpn.pending_pairing');
 
       String? statusWarning;
       try {
@@ -147,8 +157,7 @@ class _PairingPageState extends State<PairingPage> {
       });
     } catch (error) {
       if (error is DioException && error.response?.statusCode == 400) {
-        await _storage.delete(key: 'ios8vpn.pending_pairing.token');
-        await _storage.delete(key: 'ios8vpn.pending_pairing.credential');
+        await _storage.delete(key: 'ios8vpn.pending_pairing');
       }
       if (!mounted) return;
       final message = redeemedDeviceId == null
