@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Hiddify</string>
+	<string>IOS8 VPN</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,6 +29,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>ios8vpn</string>
 				<string>hiddify</string>
 				<string>v2ray</string>
 				<string>v2rayn</string>
@@ -52,9 +53,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to scan QR codes</string>
+	<string>IOS8 VPN 需要使用相机扫描连接二维码。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photos access to get QR code from photo library</string>
+	<string>IOS8 VPN 需要访问照片，以便从图片中导入连接二维码。</string>
 	<key>SERVICE_IDENTIFIER</key>
 	<string>$(SERVICE_IDENTIFIER)</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
