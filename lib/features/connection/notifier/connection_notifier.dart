@@ -11,6 +11,8 @@ import 'package:hiddify/features/connection/model/connection_failure.dart';
 import 'package:hiddify/features/connection/model/connection_status.dart';
 import 'package:hiddify/features/connection/model/startup_connection.dart';
 import 'package:hiddify/features/profile/model/profile_entity.dart';
+import 'package:hiddify/features/profile/data/profile_data_providers.dart';
+import 'package:hiddify/features/pairing/data/device_config_service.dart';
 import 'package:hiddify/features/profile/notifier/active_profile_notifier.dart';
 import 'package:hiddify/features/window/notifier/window_notifier.dart';
 import 'package:hiddify/hiddifycore/hiddify_core_service_provider.dart';
@@ -49,7 +51,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
     });
 
     ref.listen(activeProfileProvider.select((value) => value.asData?.value), (previous, next) async {
-      if (previous == null) return;
+      if (previous == null || _preparingDeviceConfig) return;
       final shouldReconnect = next == null || previous.id != next.id;
       if (shouldReconnect) {
         await reconnect(next);
@@ -191,6 +193,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
 
   /// Bumped on disconnect / stuck-retry so a superseded in-flight connect cannot overwrite UI.
   int _connectEpoch = 0;
+  bool _preparingDeviceConfig = false;
 
   /// Returns the failure when this call's connect failed, null otherwise. With [reportFailure]
   /// off, a failure shows no dialog and keeps the user's intent to connect, so a retry can follow.
@@ -224,6 +227,29 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
     required bool reportFailure,
     bool showWindowOnFailure = false,
   }) async {
+    if (Platform.isWindows) {
+      final service = DeviceConfigService();
+      _preparingDeviceConfig = true;
+      state = const AsyncData(Connecting());
+      try {
+        final repository = await ref.read(profileRepositoryProvider.future);
+        await service.prepare(repository);
+      } catch (error) {
+        if (epoch != _connectEpoch) return null;
+        final failure = ConnectionFailure.unexpected(error);
+        state = AsyncData(Disconnected(failure));
+        if (reportFailure) {
+          await ref.read(Preferences.startedByUser.notifier).update(false);
+          await ref.read(dialogNotifierProvider.notifier)
+              .showCustomAlertFromErr(failure.present(ref.read(translationsProvider).requireValue));
+        }
+        return failure;
+      } finally {
+        _preparingDeviceConfig = false;
+        service.close();
+      }
+    }
+    if (epoch != _connectEpoch) return null;
     final activeProfile = await ref.read(activeProfileProvider.future);
     if (activeProfile == null) {
       loggy.info("no active profile, not connecting");
@@ -327,3 +353,4 @@ class SingleCall {
 }
 
 /// Whether the core is hot reloading; only the connection button shows it.
+

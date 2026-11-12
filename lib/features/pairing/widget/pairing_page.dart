@@ -210,7 +210,7 @@ class _PairingPageState extends State<PairingPage> {
                     const SizedBox(height: 10),
                     Text(
                       _paired
-                          ? '设备${_deviceName?.isNotEmpty == true ? '“$_deviceName”' : ''}已登记并保存独立凭据。当前 VPN 核心配置尚未下发，因此暂时还不能建立 VPN 隧道。'
+                          ? '设备${_deviceName?.isNotEmpty == true ? '“$_deviceName”' : ''}已登记并保存独立凭据。返回主页点击连接后，将自动获取并校验 VPN 配置。是否连接成功以主页核心状态为准。'
                           : !_hasToken
                               ? '链接中没有有效的临时配对令牌。请返回 IOS8 VPN 管理中心重新生成连接二维码。'
                               : !supported
@@ -262,3 +262,4 @@ class _PairingPageState extends State<PairingPage> {
     );
   }
 }
+
