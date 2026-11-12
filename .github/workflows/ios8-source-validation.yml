@@ -92,3 +92,16 @@ jobs:
           assert "Hiddify Extended GNU General Public License v3" in license_text
           print("IOS8 branding, Chinese locale, iOS plist, Windows metadata, SVG and upstream license checks passed.")
           PY
+
+      - name: Set up Flutter for focused client tests
+        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
+        with:
+          flutter-version: 3.38.5
+          channel: stable
+          cache: true
+      - name: Get Dart packages
+        run: flutter pub get
+      - name: Test IOS8 VPN deep-link parsing
+        run: flutter test test/utils/link_parsers_test.dart
+      - name: Analyze IOS8 VPN pairing route
+        run: flutter analyze lib/utils/link_parsers.dart lib/core/router/go_router/routing_config_notifier.dart lib/features/pairing/widget/pairing_page.dart
