@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -189,7 +190,7 @@ class ConnectionButton extends HookConsumerWidget {
   /// Connects, or sends the user to add a profile when there is none.
   Future<void> _connect(WidgetRef ref) async {
     final dialogs = ref.read(dialogNotifierProvider.notifier);
-    if (ref.read(activeProfileProvider).valueOrNull == null) {
+    if (!Platform.isWindows && ref.read(activeProfileProvider).valueOrNull == null) {
       await dialogs.showNoActiveProfile();
       ref.read(bottomSheetsNotifierProvider.notifier).showAddProfile();
       return;

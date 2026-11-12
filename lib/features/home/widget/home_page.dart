@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +7,7 @@ import 'package:hiddify/core/app_info/app_info_provider.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/router/bottom_sheets/bottom_sheets_notifier.dart';
 import 'package:hiddify/features/home/widget/connection_button.dart';
+import 'package:hiddify/features/pairing/widget/device_controls.dart';
 import 'package:hiddify/features/home/widget/local_proxy_hint.dart';
 import 'package:hiddify/features/profile/notifier/active_profile_notifier.dart';
 import 'package:hiddify/features/profile/widget/profile_tile.dart';
@@ -49,6 +52,7 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
         actions: [
+          if (!Platform.isWindows)
           // IconButton(
           //     onPressed: () => const QuickSettingsRoute().push(context),
           //     icon: const Icon(FluentIcons.options_24_filled),
@@ -140,7 +144,7 @@ class HomePage extends HookConsumerWidget {
                           children: [
                             // const Gap(100),
                             switch (activeProfile) {
-                              AsyncData(value: final profile?) => ProfileTile(
+                              AsyncData(value: final profile?) when !Platform.isWindows => ProfileTile(
                                 profile: profile,
                                 isMain: true,
                                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -156,7 +160,7 @@ class HomePage extends HookConsumerWidget {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [ConnectionButton(), ActiveProxyDelayIndicator()],
+                                      children: [ConnectionButton(), ActiveProxyDelayIndicator(), DeviceControls()],
                                     ),
                                   ),
                                   ActiveProxyFooter(),

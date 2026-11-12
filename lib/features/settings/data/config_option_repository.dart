@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +21,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class ConfigOptions {
+  static final ios8SmartRouting = PreferencesNotifier.create<bool, bool>(
+    'ios8-smart-routing', true,
+  );
   static final serviceMode = PreferencesNotifier.create<ServiceMode, String>(
     "service-mode",
     ServiceMode.defaultMode,
@@ -602,7 +606,7 @@ abstract class ConfigOptions {
     final mode = ref.watch(serviceMode);
     // final reg = ref.watch(Preferences.region.notifier).raw();
     return SingboxConfigOption(
-      region: ref.watch(region).name,
+      region: Platform.isWindows ? 'cn' : ref.watch(region).name,
       balancerStrategy: ref.watch(balancerStrategy),
       defaultProxy: ref.watch(defaultProxy),
       // blockAds: ref.watch(blockAds),
@@ -613,7 +617,7 @@ abstract class ConfigOptions {
       ipv6Mode: ref.watch(ipv6Mode),
       remoteDnsAddress: ref.watch(remoteDnsAddress),
       remoteDnsDomainStrategy: ref.watch(remoteDnsDomainStrategy),
-      directDnsAddress: ref.watch(directDnsAddress),
+      directDnsAddress: Platform.isWindows ? 'udp://223.5.5.5' : ref.watch(directDnsAddress),
       directDnsDomainStrategy: ref.watch(directDnsDomainStrategy),
       mixedPort: ref.watch(mixedPort),
       tproxyPort: ref.watch(tproxyPort),
@@ -692,7 +696,12 @@ abstract class ConfigOptions {
         ),
         profile: SingboxUnblockerProfileOption(id: ref.watch(unblockerProfileId)),
       ),
-      routeRule: RouteRule(rules: ref.watch(rulesNotifierProvider)).toProto3Json()! as Map<String, dynamic>,
+      routeRule: RouteRule(rules: Platform.isWindows
+          ? [
+              BuiltinRule.bypassLan.rule..enabled = true,
+              if (ref.watch(ios8SmartRouting)) BuiltinRule.bypassRegion.rule..enabled = true,
+            ]
+          : ref.watch(rulesNotifierProvider)).toProto3Json()! as Map<String, dynamic>,
     );
   });
 }
