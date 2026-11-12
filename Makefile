@@ -323,15 +323,15 @@ windows-zip-release:
 	$(YELLOW)Post-processing Windows portable$(DONE); \
 	cd "$$ZIP_DIR"; \
 	$(BLUE)Extracting and Repacking...$(DONE); \
-	mkdir -p Hiddify; \
-	unzip -q "$$ZIP_FILE" -d Hiddify/; \
+	mkdir -p IOS8VPN; \
+	unzip -q "$$ZIP_FILE" -d IOS8VPN/; \
 	rm "$$ZIP_FILE"; \
 	if command -v 7z > /dev/null 2>&1; then \
-	  7z a -tzip -bso0 -bsp0 "$$FILE_NAME.zip" Hiddify; \
+	  7z a -tzip -bso0 -bsp0 "$FILE_NAME.zip" IOS8VPN; \
 	else \
-	  pwsh -NoProfile -Command "Compress-Archive -Path Hiddify -DestinationPath '$$FILE_NAME.zip' -Force"; \
+	  pwsh -NoProfile -Command "Compress-Archive -Path IOS8VPN -DestinationPath '$$FILE_NAME.zip' -Force"; \
 	fi; \
-	rm -rf Hiddify; \
+	rm -rf IOS8VPN; \
 	$(GREEN)Successful$(DONE)
 
 windows-exe-release:
