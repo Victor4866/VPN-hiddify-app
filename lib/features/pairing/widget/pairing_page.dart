@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// Safe landing page for IOS8 VPN one-time pairing links.
 ///
@@ -45,7 +46,7 @@ class PairingPage extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
-                        onPressed: () => Navigator.of(context).maybePop(),
+                        onPressed: () => context.go('/home'),
                         child: const Text('返回'),
                       ),
                     ),
