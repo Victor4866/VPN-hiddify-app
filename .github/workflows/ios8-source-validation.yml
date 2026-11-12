@@ -104,8 +104,6 @@ jobs:
         run: flutter pub get
       - name: Test IOS8 VPN deep-link parsing
         run: flutter test test/utils/link_parsers_test.dart
-      - name: Generate Riverpod providers
-        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Analyze IOS8 VPN pairing route
         run: flutter analyze lib/utils/link_parsers.dart lib/core/router/go_router/routing_config_notifier.dart lib/features/pairing/widget/pairing_page.dart
