@@ -1,0 +1,115 @@
+name: IOS8 Windows Signed Candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ios8-windows-signed-candidate
+  cancel-in-progress: false
+
+jobs:
+  signed-candidate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 90
+    environment: windows-release
+    env:
+      CHANNEL: prod
+      IS_GITHUB_ACTIONS: 1
+      AZURE_SIGNING_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+      AZURE_SIGNING_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+      AZURE_SIGNING_CERT_PROFILE: ${{ vars.AZURE_SIGNING_CERT_PROFILE }}
+      WINDOWS_SIGNING_PUBLISHER: ${{ vars.WINDOWS_SIGNING_PUBLISHER }}
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      WINDOWS_SIGNING_KEY: ${{ secrets.WINDOWS_SIGNING_KEY }}
+      WINDOWS_SIGNING_PASSWORD: ${{ secrets.WINDOWS_SIGNING_PASSWORD }}
+      WINDOWS_SIGNING_SHA1: ${{ vars.WINDOWS_SIGNING_SHA1 }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Require signing identity
+        shell: pwsh
+        run: |
+          if (-not $env:WINDOWS_SIGNING_PUBLISHER) { throw 'Configure the expected legal certificate subject in WINDOWS_SIGNING_PUBLISHER.' }
+          if (-not $env:AZURE_SIGNING_ENDPOINT -and -not $env:WINDOWS_SIGNING_KEY) {
+            throw 'A public-trust signing backend is required; unsigned candidates are forbidden.'
+          }
+          if ($env:WINDOWS_SIGNING_KEY -and -not $env:AZURE_SIGNING_ENDPOINT) {
+            $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
+              [Convert]::FromBase64String($env:WINDOWS_SIGNING_KEY), $env:WINDOWS_SIGNING_PASSWORD)
+            $chain = [System.Security.Cryptography.X509Certificates.X509Chain]::new()
+            if ($cert.Subject -ne $env:WINDOWS_SIGNING_PUBLISHER -or $cert.Subject -eq $cert.Issuer -or
+                -not $cert.HasPrivateKey -or -not $chain.Build($cert)) {
+              throw 'Signing certificate must match the expected publisher and chain to a public trusted root.'
+            }
+          }
+      - name: Set up Flutter and Windows build dependencies
+        uses: ./.github/actions/setup-flutter
+        with:
+          platform: windows
+          generated-code: false
+          install-deps: true
+      - name: Configure existing signing backend and Inno uninstaller signing
+        shell: pwsh
+        run: ./windows/scripts/configure_windows_signing.ps1 -MsixConfig out/no-msix.yaml
+      - name: Authenticate Azure signing with OIDC
+        if: env.AZURE_OIDC == 'true'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Build Windows release
+        run: make windows-validate
+      - name: Package signed installer
+        run: make windows-exe-release
+      - name: Verify public-trust signatures and write candidate manifest
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tree = 'build/windows/x64/runner/Release'
+          $pe = Get-ChildItem $tree -Recurse -File | Where-Object { $_.Extension -in '.exe','.dll','.sys' }
+          if (-not $pe) { throw 'Release tree is empty.' }
+          foreach ($file in $pe) {
+            $sig = Get-AuthenticodeSignature $file.FullName
+            if ($sig.Status -ne 'Valid') { throw "Untrusted or unsigned release file: $($file.Name)" }
+          }
+          $app = Get-AuthenticodeSignature (Join-Path $tree 'IOS8VPN.exe')
+          if ($app.SignerCertificate.Subject -ne $env:WINDOWS_SIGNING_PUBLISHER) { throw 'Unexpected app publisher.' }
+          $installers = @(Get-ChildItem dist -Recurse -File -Filter '*.exe' | Where-Object { $_.Name -match 'Setup.*x64.*\.exe$' })
+          if ($installers.Count -ne 1) { throw 'Expected exactly one x64 installer.' }
+          $installer = $installers[0]
+          $sig = Get-AuthenticodeSignature $installer.FullName
+          if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -ne $env:WINDOWS_SIGNING_PUBLISHER) {
+            throw 'Installer signature must be trusted and match the expected publisher.'
+          }
+          New-Item out -ItemType Directory -Force | Out-Null
+          $output = 'out/IOS8-VPN-Windows-x64-Signed-Candidate.exe'
+          Copy-Item $installer.FullName $output
+          $manifest = @{
+            sourceCommit = $env:GITHUB_SHA
+            sha256 = (Get-FileHash $output -Algorithm SHA256).Hash.ToLower()
+            size = (Get-Item $output).Length
+            publisher = $sig.SignerCertificate.Subject
+            certificateThumbprint = $sig.SignerCertificate.Thumbprint
+            signatureStatus = 'Valid'
+            releaseStatus = 'candidate-awaiting-windows-and-vps-acceptance'
+            runId = $env:GITHUB_RUN_ID
+          }
+          $manifest | ConvertTo-Json | Set-Content out/manifest.json -Encoding utf8
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ios8-vpn-windows-signed-candidate
+          path: out/*
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove ephemeral PFX
+        if: always()
+        shell: pwsh
+        run: Remove-Item windows/sign.pfx -Force -ErrorAction SilentlyContinue
