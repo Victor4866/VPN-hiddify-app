@@ -1,16 +1,11 @@
-app_id: 6L903538-42B1-4596-G479-BJ779F21A65D
-publisher_name: Hiddify
-publisher_url: https://github.com/hiddify/hiddify-app
-display_name: Hiddify
+app_id: "{D91C7D6B-9B7A-4F0C-A7E2-8B4F2C91D608}"
+publisher_name: IOS8
+publisher_url: https://github.com/Victor4866/VPN-hiddify-app
+display_name: IOS8 VPN
 create_desktop_icon: true
-install_dir_name: "{autopf64}\\Hiddify"
-setup_icon_file: windows\runner\resources\app_icon.ico
+install_dir_name: "{autopf64}\\IOS8 VPN"
+setup_icon_file: windows\\runner\\resources\\app_icon.ico
 locales:
-  - ar
+  - zh
   - en
-  - es
-  - fr
-  - pt
-  - ru
-  - tr
 script_template: inno_setup.sas
