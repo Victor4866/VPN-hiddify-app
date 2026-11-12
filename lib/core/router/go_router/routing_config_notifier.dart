@@ -9,6 +9,7 @@ import 'package:hiddify/core/router/go_router/helper/active_breakpoint_notifier.
 import 'package:hiddify/core/router/go_router/helper/custom_transition.dart';
 import 'package:hiddify/core/router/go_router/refresh_listenable.dart';
 import 'package:hiddify/features/about/widget/about_page.dart';
+import 'package:hiddify/features/pairing/widget/pairing_page.dart';
 import 'package:hiddify/features/app_based_routing/overview/app_list_page.dart';
 import 'package:hiddify/features/home/widget/home_page.dart';
 import 'package:hiddify/features/intro/widget/intro_page.dart';
@@ -83,6 +84,12 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
           url = state.uri.queryParameters['url'];
         }
 
+        final incomingLink = url == null ? null : Uri.tryParse(url);
+        if (incomingLink?.scheme == 'ios8vpn' && incomingLink?.host == 'pair') {
+          final token = incomingLink!.queryParameters['token'] ?? '';
+          return '/pair?token=${Uri.encodeQueryComponent(token)}';
+        }
+
         if (!ref.read(Preferences.introCompleted)) {
           // Intro is not completed
           return url != null ? '/intro?url=$url' : '/intro';
@@ -114,6 +121,11 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
         return null;
       },
       routes: <RouteBase>[
+        GoRoute(
+          name: 'pairing',
+          path: '/pair',
+          builder: (_, state) => PairingPage(token: state.uri.queryParameters['token'] ?? ''),
+        ),
         StatefulShellRoute.indexedStack(
           builder: (_, _, navigationShell) => MyAdaptiveLayout(
             navigationShell: navigationShell,
