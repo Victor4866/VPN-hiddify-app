@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hiddify/features/profile/data/profile_repository.dart';
+import 'package:hiddify/features/profile/model/profile_entity.dart';
 
 /// Downloads with a Bearer header, never a credential in a profile URL.
 /// Core validation and activation must both succeed before connecting.
@@ -19,7 +20,7 @@ class DeviceConfigService {
   final Dio _dio;
   final FlutterSecureStorage _storage;
 
-  Future<void> prepare(ProfileRepository repository) async {
+  Future<ProfileEntity> prepare(ProfileRepository repository) async {
     final credential = await _storage.read(key: 'ios8vpn.device.credential');
     final deviceId = await _storage.read(key: 'ios8vpn.device.id');
     if (credential == null || deviceId == null) {
@@ -60,6 +61,10 @@ class DeviceConfigService {
     }
     (await repository.setAsActive(id).run())
         .getOrElse((_) => throw StateError('无法启用设备配置，请重试。'));
+    final profile = (await repository.getById(id).run())
+        .getOrElse((_) => throw StateError('无法读取设备配置，请重试。'));
+    if (profile == null) throw StateError('设备配置不存在，请重试。');
+    return profile;
   }
 
   void close() => _dio.close();
