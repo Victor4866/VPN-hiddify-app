@@ -1,0 +1,77 @@
+name: IOS8 Source Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "assets/translations/zh-CN.i18n.json"
+      - "assets/images/logo.svg"
+      - "ios/Runner/Info.plist"
+      - "ios/Runner/AppIcon.icon/Assets/logo.svg"
+      - "lib/core/localization/locale_preferences.dart"
+      - "windows/CMakeLists.txt"
+      - "windows/runner/main.cpp"
+      - "windows/runner/Runner.rc"
+      - "Makefile"
+      - ".github/workflows/ios8-source-validation.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate IOS8 branding and localization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Validate JSON, plist, SVG and platform branding
+        run: |
+          python3 - <<'PY'
+          import json
+          import plistlib
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          root = Path(".")
+          translations = json.loads((root / "assets/translations/zh-CN.i18n.json").read_text(encoding="utf-8"))
+          assert translations["common"]["appTitle"] == "IOS8 VPN"
+          assert "Hiddify" in translations["intro"]["info(rich)"], "Upstream attribution must remain visible"
+
+          locale_source = (root / "lib/core/localization/locale_preferences.dart").read_text(encoding="utf-8")
+          assert "if (persisted == null) return AppLocale.zhCn;" in locale_source
+
+          info = plistlib.loads((root / "ios/Runner/Info.plist").read_bytes())
+          assert info["CFBundleDisplayName"] == "IOS8 VPN"
+          schemes = [scheme for item in info.get("CFBundleURLTypes", []) for scheme in item.get("CFBundleURLSchemes", [])]
+          assert "ios8vpn" in schemes
+
+          for svg_path in [
+              root / "assets/images/logo.svg",
+              root / "ios/Runner/AppIcon.icon/Assets/logo.svg",
+          ]:
+              ET.parse(svg_path)
+
+          cmake = (root / "windows/CMakeLists.txt").read_text(encoding="utf-8")
+          assert 'set(BINARY_NAME "IOS8VPN")' in cmake
+
+          win_main = (root / "windows/runner/main.cpp").read_text(encoding="utf-8")
+          assert 'L"IOS8 VPN"' in win_main
+          assert 'L"IOS8VPNMutex"' in win_main
+
+          win_rc = (root / "windows/runner/Runner.rc").read_text(encoding="utf-8")
+          assert 'VALUE "ProductName", "IOS8 VPN"' in win_rc
+          assert 'VALUE "OriginalFilename", "IOS8VPN.exe"' in win_rc
+
+          makefile = (root / "Makefile").read_text(encoding="utf-8")
+          assert "mkdir -p IOS8VPN;" in makefile
+          assert "Compress-Archive -Path IOS8VPN" in makefile
+
+          license_text = (root / "LICENSE.md").read_text(encoding="utf-8")
+          assert "Hiddify Extended GNU General Public License v3" in license_text
+          print("IOS8 branding, Chinese locale, iOS plist, Windows metadata, SVG and upstream license checks passed.")
+          PY
