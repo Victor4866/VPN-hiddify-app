@@ -2,6 +2,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hiddify/utils/link_parsers.dart';
 
 void main() {
+  group("IOS8 VPN pairing links", () {
+    test("extracts a one-time token without treating it as a profile URL", () {
+      expect(
+        LinkParser.pairingToken("ios8vpn://pair?token=one-time-abc"),
+        equals("one-time-abc"),
+      );
+      expect(LinkParser.deep("ios8vpn://pair?token=one-time-abc"), isNull);
+    });
+
+    test("rejects a missing or unrelated pairing token", () {
+      expect(LinkParser.pairingToken("ios8vpn://pair"), isNull);
+      expect(LinkParser.pairingToken("hiddify://pair?token=abc"), isNull);
+    });
+  });
+
   group("LinkParser.deep - hiddify scheme", () {
     test("path form uses the fragment as the name", () {
       final link = LinkParser.deep("hiddify://import/https://sub.com/x#MyProfile");
