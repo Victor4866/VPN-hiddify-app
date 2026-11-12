@@ -14,7 +14,16 @@ abstract class LinkParser {
   }
 
   // protocols schemas
-  static const protocols = ['hiddify', 'v2ray', 'v2rayn', 'v2rayng', 'clash', 'clashmeta', 'sing-box'];
+  static const protocols = ['ios8vpn', 'hiddify', 'v2ray', 'v2rayn', 'v2rayng', 'clash', 'clashmeta', 'sing-box'];
+
+  /// Returns the one-time pairing token from an IOS8 VPN pairing deep link.
+  /// The token is not treated as a profile URL and must never be logged.
+  static String? pairingToken(String link) {
+    final uri = Uri.tryParse(link.trim());
+    if (uri == null || uri.scheme != 'ios8vpn' || uri.host != 'pair') return null;
+    final token = uri.queryParameters['token'];
+    return token == null || token.isEmpty ? null : token;
+  }
 
   static ProfileLink? parse(String link) {
     return simple(link) ?? deep(link);
