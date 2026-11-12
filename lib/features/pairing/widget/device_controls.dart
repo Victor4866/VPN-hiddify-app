@@ -30,8 +30,10 @@ class DeviceControls extends ConsumerWidget {
               try {
                 await ref.read(ConfigOptions.ios8SmartRouting.notifier).update(selection.single);
               } catch (_) {
-                if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('模式保存失败，请重试。')));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('模式保存失败，请重试。')));
+                }
               }
             },
           ),
@@ -47,8 +49,10 @@ class DeviceControls extends ConsumerWidget {
                 final opened = await launchUrl(Uri.parse('https://vpn.ios8.io'), mode: LaunchMode.externalApplication);
                 if (!opened) throw StateError('browser unavailable');
               } catch (_) {
-                if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('请在浏览器打开 https://vpn.ios8.io 完成授权。')));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('请在浏览器打开 https://vpn.ios8.io 完成授权。')));
+                }
               }
             },
           ),
