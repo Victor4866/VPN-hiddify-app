@@ -1,5 +1,13 @@
 # Changelog
 
+## IOS8 VPN development (unreleased)
+
+- Set Simplified Chinese as the first-launch default.
+- Rebranded the Chinese UI, iOS display name and Windows application metadata to IOS8 VPN.
+- Added the `ios8vpn://` URL scheme on iOS while retaining upstream import schemes.
+- Started replacing the in-app logo with an original IOS8 mark.
+- Kept Hiddify / sing-box attribution and the upstream license.
+
 ## [0.16.0.dev] - 2024-2-18
 
 ### New Features and Improvements
