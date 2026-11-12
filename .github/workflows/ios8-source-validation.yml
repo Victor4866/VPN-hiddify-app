@@ -19,6 +19,7 @@ on:
       - "lib/core/router/go_router/routing_config_notifier.dart"
       - "lib/features/pairing/**"
       - "test/utils/link_parsers_test.dart"
+      - "test/features/pairing/**"
       - "Makefile"
       - "pubspec.yaml"
       - ".github/workflows/ios8-source-validation.yml"
@@ -105,7 +106,7 @@ jobs:
       - name: Generate models and providers before analysis
         run: make gen translate
       - name: Test IOS8 VPN deep-link parsing
-        run: flutter test test/utils/link_parsers_test.dart
+        run: flutter test test/utils/link_parsers_test.dart test/features/pairing/device_config_service_test.dart
 
       - name: Analyze IOS8 VPN pairing route
         run: flutter analyze lib/utils/link_parsers.dart lib/features/pairing lib/features/connection/notifier/connection_notifier.dart
