@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="stop">Stop</string>
-    <string name="quick_toggle">Toggle</string>
-    <string name="status_starting">Connecting…</string>
-    <string name="status_started">Connected</string>
-    <string name="mode_vpn">VPN</string>
-    <string name="mode_proxy">Proxy</string>
+    <string name="stop">停止</string>
+    <string name="quick_toggle">快速切换</string>
+    <string name="status_starting">正在连接…</string>
+    <string name="status_started">已连接</string>
+    <string name="mode_vpn">VPN 模式</string>
+    <string name="mode_proxy">代理模式</string>
 </resources>
