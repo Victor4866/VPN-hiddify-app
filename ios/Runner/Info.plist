@@ -30,7 +30,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>ios8vpn</string>
-				<string>ios8vpn</string>
 				<string>hiddify</string>
 				<string>v2ray</string>
 				<string>v2rayn</string>
