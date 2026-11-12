@@ -30,10 +30,10 @@ jobs:
       CHANNEL: prod
       IS_GITHUB_ACTIONS: 1
     steps:
-      - name: Check out IOS8 VPN source and submodules
+      # Windows uses the pinned prebuilt core release assets downloaded by windows-prepare.
+      # The hiddify-core source submodule is not needed for this platform build.
+      - name: Check out IOS8 VPN source
         uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       - name: Set up Flutter and Windows build dependencies
         uses: ./.github/actions/setup-flutter
