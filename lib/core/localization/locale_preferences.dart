@@ -10,7 +10,8 @@ class LocalePreferences extends _$LocalePreferences with AppLogger {
   @override
   AppLocale build() {
     final persisted = ref.watch(sharedPreferencesProvider).requireValue.getString("locale");
-    if (persisted == null) return AppLocaleUtils.findDeviceLocale();
+    // IOS8 VPN 首次启动默认使用简体中文；用户手动选择的语言仍会保存在本地。
+    if (persisted == null) return AppLocale.zhCn;
     // keep backward compatibility with chinese after changing zh to zh_CN
     if (persisted == "zh") {
       return AppLocale.zhCn;
