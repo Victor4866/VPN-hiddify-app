@@ -20,6 +20,7 @@ on:
       - "lib/features/pairing/widget/pairing_page.dart"
       - "test/utils/link_parsers_test.dart"
       - "Makefile"
+      - "pubspec.yaml"
       - ".github/workflows/ios8-source-validation.yml"
   pull_request:
     branches: [main]
