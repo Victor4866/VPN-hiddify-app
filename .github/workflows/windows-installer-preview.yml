@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/windows-installer-preview.yml"
+      - ".gitmodules"
       - "lib/**"
       - "windows/**"
       - "hiddify-core"
