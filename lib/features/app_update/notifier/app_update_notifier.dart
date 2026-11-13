@@ -62,6 +62,7 @@ class AppUpdateNotifier extends _$AppUpdateNotifier with AppLogger {
             return state = AppUpdateState.error(err);
           },
           (remote) {
+            if (remote == null) return state = const AppUpdateState.notAvailable();
             try {
               final latestVersion = Version.parse(remote.version);
               final currentVersion = Version.parse(appInfo.version);

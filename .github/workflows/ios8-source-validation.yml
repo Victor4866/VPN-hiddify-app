@@ -18,6 +18,10 @@ on:
       - "lib/utils/link_parsers.dart"
       - "lib/core/router/go_router/routing_config_notifier.dart"
       - "lib/features/pairing/**"
+      - "lib/features/app_update/**"
+      - "lib/core/model/constants.dart"
+      - "test/features/app_update/**"
+      - "windows/packaging/exe/inno_setup.sas"
       - "lib/features/home/widget/home_page.dart"
       - "lib/features/home/widget/connection_button.dart"
       - "lib/features/settings/data/config_option_repository.dart"
@@ -109,7 +113,7 @@ jobs:
       - name: Generate models and providers before analysis
         run: make gen translate
       - name: Test IOS8 VPN deep-link parsing
-        run: flutter test test/utils/link_parsers_test.dart test/features/pairing/device_config_service_test.dart
+        run: flutter test test/utils/link_parsers_test.dart test/features/pairing/device_config_service_test.dart test/features/app_update/app_update_test.dart test/features/app_update/ios8_update_repository_test.dart
 
       - name: Analyze IOS8 VPN pairing route
-        run: flutter analyze lib/utils/link_parsers.dart lib/features/pairing lib/features/connection/notifier/connection_notifier.dart lib/features/home/widget/home_page.dart lib/features/home/widget/connection_button.dart lib/features/settings/data/config_option_repository.dart
+        run: flutter analyze lib/utils/link_parsers.dart lib/features/pairing lib/features/connection/notifier/connection_notifier.dart lib/features/home/widget/home_page.dart lib/features/home/widget/connection_button.dart lib/features/settings/data/config_option_repository.dart lib/features/app_update lib/core/model/constants.dart

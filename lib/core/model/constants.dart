@@ -4,10 +4,10 @@ import 'package:hiddify/utils/utils.dart';
 
 abstract class Constants {
   static const appName = "Hiddify";
-  static const githubUrl = "https://github.com/hiddify/hiddify-next";
+  static const githubUrl = "https://github.com/Victor4866/VPN-hiddify-app";
   static const licenseUrl = "https://github.com/hiddify/hiddify-next?tab=License-1-ov-file#readme";
-  static const githubReleasesApiUrl = "https://api.github.com/repos/hiddify/hiddify-app/releases";
-  static const githubLatestReleaseUrl = "https://github.com/hiddify/hiddify-app/releases/latest";
+  static const githubReleasesApiUrl = "https://api.github.com/repos/Victor4866/VPN-hiddify-app/releases";
+  static const githubLatestReleaseUrl = "https://github.com/Victor4866/VPN-hiddify-app/releases/latest";
   static const telegramChannelUrl = "https://t.me/hiddify";
   static const bugReportEmail = "bug@hiddify.com";
   static const bugReportTelegramUrl = "https://t.me/hiddify_board";

@@ -55,6 +55,7 @@ void main() {
           'Hiddify-Android-x86_64.apk',
           'Hiddify-Android-universal.apk',
           'Hiddify-Windows-Setup-x64.exe',
+          'IOS8-VPN-Windows-x64.exe',
           'Hiddify-Windows-Setup-x64.Msix',
           'Hiddify-Windows-Portable-x64.zip',
           'Hiddify-Linux-x64.AppImage',
@@ -75,7 +76,7 @@ void main() {
     });
 
     test('each desktop install takes its own format, never a store build', () {
-      expect(asset(InstallKind.windowsSetup), 'Hiddify-Windows-Setup-x64.exe');
+      expect(asset(InstallKind.windowsSetup), 'IOS8-VPN-Windows-x64.exe');
       expect(asset(InstallKind.linuxAppImage), 'Hiddify-Linux-x64.AppImage');
       expect(asset(InstallKind.linuxDeb), 'Hiddify-Debian-x64.deb');
       expect(asset(InstallKind.macOS), 'Hiddify-MacOS.dmg');

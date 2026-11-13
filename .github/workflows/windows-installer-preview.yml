@@ -48,6 +48,10 @@ jobs:
       - name: Package unsigned Windows installer
         run: make windows-exe-release
 
+      - name: Verify real installer shortcuts and overwrite repair
+        shell: pwsh
+        run: ./windows/scripts/test_ios8_installer.ps1
+
       - name: Verify installer output
         shell: pwsh
         run: |

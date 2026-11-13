@@ -31,7 +31,7 @@ AppCopyright=Copyright (C) {{PUBLISHER_NAME}}
 ; Settings > Apps / Add or Remove Programs entry: plain name + the app icon
 ; (Store policy 10.2.7 rejects a blank or unrelated name or publisher).
 UninstallDisplayName={{DISPLAY_NAME}}
-UninstallDisplayIcon={app}\{{EXECUTABLE_NAME}}
+UninstallDisplayIcon={app}\IOS8VPN.exe
 ; CI (windows/scripts/configure_windows_signing.ps1) registers the "hiddifysign"
 ; Sign Tool and sets HIDDIFY_INNO_SIGNTOOL, so the compiler signs Setup.exe *and*
 ; unins000.exe. An unsigned uninstaller dropped into Program Files is one of the
@@ -78,23 +78,23 @@ Source: "{{SOURCE_DIR}}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdir
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{{DISPLAY_NAME}}"; Filename: "{app}\{{EXECUTABLE_NAME}}"
-Name: "{autodesktop}\{{DISPLAY_NAME}}"; Filename: "{app}\{{EXECUTABLE_NAME}}"; Tasks: desktopicon
-Name: "{userstartup}\{{DISPLAY_NAME}}"; Filename: "{app}\{{EXECUTABLE_NAME}}"; WorkingDir: "{app}"; Tasks: launchAtStartup
+Name: "{autoprograms}\{{DISPLAY_NAME}}"; Filename: "{app}\IOS8VPN.exe"
+Name: "{autodesktop}\{{DISPLAY_NAME}}"; Filename: "{app}\IOS8VPN.exe"; Tasks: desktopicon
+Name: "{userstartup}\{{DISPLAY_NAME}}"; Filename: "{app}\IOS8VPN.exe"; WorkingDir: "{app}"; Tasks: launchAtStartup
 [Registry]
 ; A "Run as administrator" compatibility layer left on the app's path by an older install (or set
 ; by hand) makes CreateProcess refuse the app with error 740, so the launch at the end of Setup
 ; failed with "The requested operation requires elevation". The app must not run elevated anyway:
 ; it installs its service through HiddifyAdmin.exe, and an elevated app sets the system proxy and
 ; the autostart for the wrong user. Drop the layer for both hives.
-Root: HKCU; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; ValueName: "{app}\{{EXECUTABLE_NAME}}"; ValueType: none; Flags: deletevalue dontcreatekey noerror
-Root: HKLM; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; ValueName: "{app}\{{EXECUTABLE_NAME}}"; ValueType: none; Flags: deletevalue dontcreatekey noerror
+Root: HKCU; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; ValueName: "{app}\IOS8VPN.exe"; ValueType: none; Flags: deletevalue dontcreatekey noerror
+Root: HKLM; Subkey: "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; ValueName: "{app}\IOS8VPN.exe"; ValueType: none; Flags: deletevalue dontcreatekey noerror
 
 [Run]
 ; shellexec: the app starts through ShellExecuteEx, as from Explorer. Should the app still need
 ; elevation (a compatibility layer, a policy), Windows prompts for it instead of CreateProcess
 ; failing with error 740.
-Filename: "{app}\{{EXECUTABLE_NAME}}"; Description: "{cm:LaunchProgram,{{DISPLAY_NAME}}}"; Flags: {% if PRIVILEGES_REQUIRED == 'admin' %}runascurrentuser{% endif %} shellexec nowait postinstall skipifsilent
+Filename: "{app}\IOS8VPN.exe"; Description: "{cm:LaunchProgram,{{DISPLAY_NAME}}}"; Flags: {% if PRIVILEGES_REQUIRED == 'admin' %}runascurrentuser{% endif %} shellexec nowait postinstall skipifsilent
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{userappdata}\Hiddify"

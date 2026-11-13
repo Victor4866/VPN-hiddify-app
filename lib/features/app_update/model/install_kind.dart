@@ -64,7 +64,7 @@ enum InstallKind {
                 _ => 'Hiddify-Android-universal.apk',
               }) ??
               release.asset('Hiddify-Android-universal.apk'),
-        windowsSetup => release.asset('Hiddify-Windows-Setup-x64.exe'),
+        windowsSetup => release.asset('IOS8-VPN-Windows-x64.exe'),
         linuxAppImage => release.asset('Hiddify-Linux-${arm64 ? 'arm64' : 'x64'}.AppImage'),
         linuxDeb => release.asset('Hiddify-Debian-${arm64 ? 'arm64' : 'x64'}.deb'),
         macOS => release.asset('Hiddify-MacOS.dmg'),

@@ -1,7 +1,7 @@
 name: hiddify
 description: IOS8 VPN client for Windows and iPhone, based on Hiddify and sing-box.
 publish_to: "none"
-version: 5.5.6+50506
+version: 1.0.0-preview.2+50507
 
 environment:
   sdk: ^3.10.4
