@@ -227,7 +227,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
     bool showWindowOnFailure = false,
   }) async {
     ProfileEntity? managedProfile;
-    if ((Platform.isWindows || Platform.isIOS)) {
+    if (Platform.isWindows || Platform.isIOS) {
       final service = DeviceConfigService();
       state = const AsyncData(Connecting());
       try {
