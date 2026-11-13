@@ -52,7 +52,7 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
         actions: [
-          if (!Platform.isWindows)
+          if (!(Platform.isWindows || Platform.isIOS))
           // IconButton(
           //     onPressed: () => const QuickSettingsRoute().push(context),
           //     icon: const Icon(FluentIcons.options_24_filled),
@@ -144,7 +144,7 @@ class HomePage extends HookConsumerWidget {
                           children: [
                             // const Gap(100),
                             switch (activeProfile) {
-                              AsyncData(value: final profile?) when !Platform.isWindows => ProfileTile(
+                              AsyncData(value: final profile?) when !(Platform.isWindows || Platform.isIOS) => ProfileTile(
                                 profile: profile,
                                 isMain: true,
                                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -18,6 +18,7 @@ on:
       - "lib/utils/link_parsers.dart"
       - "lib/core/router/go_router/routing_config_notifier.dart"
       - "lib/features/pairing/**"
+      - "lib/features/connection/notifier/connection_notifier.dart"
       - "lib/features/app_update/**"
       - "lib/core/model/constants.dart"
       - "test/features/app_update/**"

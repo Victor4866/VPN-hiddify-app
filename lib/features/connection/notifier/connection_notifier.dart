@@ -51,7 +51,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
     });
 
     ref.listen(activeProfileProvider.select((value) => value.asData?.value), (previous, next) async {
-      if (previous == null || (Platform.isWindows && _singleStart.isRunning)) return;
+      if (previous == null || ((Platform.isWindows || Platform.isIOS) && _singleStart.isRunning)) return;
       final shouldReconnect = next == null || previous.id != next.id;
       if (shouldReconnect) {
         await reconnect(next);
@@ -227,7 +227,7 @@ class ConnectionNotifier extends _$ConnectionNotifier with AppLogger {
     bool showWindowOnFailure = false,
   }) async {
     ProfileEntity? managedProfile;
-    if (Platform.isWindows) {
+    if ((Platform.isWindows || Platform.isIOS)) {
       final service = DeviceConfigService();
       state = const AsyncData(Connecting());
       try {

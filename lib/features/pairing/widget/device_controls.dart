@@ -7,13 +7,13 @@ import 'package:hiddify/features/settings/data/config_option_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Managed Windows controls: device authorization and two routing choices.
+/// Managed Windows and iPhone controls: device authorization and two routing choices.
 class DeviceControls extends ConsumerWidget {
   const DeviceControls({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!Platform.isWindows) return const SizedBox.shrink();
+    if (!(Platform.isWindows || Platform.isIOS)) return const SizedBox.shrink();
     final smart = ref.watch(ConfigOptions.ios8SmartRouting);
     final disconnected = ref.watch(connectionNotifierProvider).valueOrNull is Disconnected;
     return Padding(

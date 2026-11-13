@@ -606,7 +606,7 @@ abstract class ConfigOptions {
     final mode = ref.watch(serviceMode);
     // final reg = ref.watch(Preferences.region.notifier).raw();
     return SingboxConfigOption(
-      region: Platform.isWindows ? 'cn' : ref.watch(region).name,
+      region: (Platform.isWindows || Platform.isIOS) ? 'cn' : ref.watch(region).name,
       balancerStrategy: ref.watch(balancerStrategy),
       defaultProxy: ref.watch(defaultProxy),
       // blockAds: ref.watch(blockAds),
@@ -617,7 +617,7 @@ abstract class ConfigOptions {
       ipv6Mode: ref.watch(ipv6Mode),
       remoteDnsAddress: ref.watch(remoteDnsAddress),
       remoteDnsDomainStrategy: ref.watch(remoteDnsDomainStrategy),
-      directDnsAddress: Platform.isWindows ? 'udp://223.5.5.5' : ref.watch(directDnsAddress),
+      directDnsAddress: (Platform.isWindows || Platform.isIOS) ? 'udp://223.5.5.5' : ref.watch(directDnsAddress),
       directDnsDomainStrategy: ref.watch(directDnsDomainStrategy),
       mixedPort: ref.watch(mixedPort),
       tproxyPort: ref.watch(tproxyPort),
@@ -696,7 +696,7 @@ abstract class ConfigOptions {
         ),
         profile: SingboxUnblockerProfileOption(id: ref.watch(unblockerProfileId)),
       ),
-      routeRule: RouteRule(rules: Platform.isWindows
+      routeRule: RouteRule(rules: (Platform.isWindows || Platform.isIOS)
           ? [
               BuiltinRule.bypassLan.rule..enabled = true,
               if (ref.watch(ios8SmartRouting)) BuiltinRule.bypassRegion.rule..enabled = true,
